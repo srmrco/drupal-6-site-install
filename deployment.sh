@@ -82,6 +82,11 @@ $DRUSH site-install $PROFILE --yes --site-name="$SITE_NAME" --site-mail="$SITE_M
 # reinstalling with locale
 # $DRUSH site-install $PROFILE  --yes --locale=$LOCALE --site-name="$SITE_NAME" --site-mail=$SITE_MAIL --db-url=$DB_URL --account-mail=$ACCOUNT_MAIL --account-name=$ACCOUNT_NAME --account-pass=$ACCOUNT_PASS
 
+# fix file permissions
+echo "Changing file permissions..."
+chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
+chmod -Rf 777 $target_dir/sites/default
+echo "Permissions have been set."
 
 echo "Installation ends."
 
