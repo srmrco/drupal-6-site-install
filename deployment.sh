@@ -80,6 +80,15 @@ $DRUSH site-install $PROFILE --yes --site-name="$SITE_NAME" --site-mail="$SITE_M
 
 # update translations
 if [[ -n $L10N_UPDATE ]]; then
+    # set proper permissions on translations dir
+    var="l10n_update_download_store"
+    $DRUSH vget $var --root="$target_dir" &> /dev/null
+    if [[ "$?" -eq 0 ]]; then
+        set `$DRUSH vget $var --root="$target_dir"`     
+        l10n_update_dir=`echo "$2" | sed 's/"//g'`
+        echo "Changing file permissions for l10n_update translations directory..."
+        chmod -Rf 775 $target_dir/$l10n_update_dir 
+    fi
     echo "Updating translations..."
     $DRUSH l10n-update --root="$target_dir"
 fi
