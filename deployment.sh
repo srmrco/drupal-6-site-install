@@ -86,8 +86,9 @@ if [[ -n $L10N_UPDATE ]]; then
     if [[ "$?" -eq 0 ]]; then
         set `$DRUSH vget $var --root="$target_dir"`     
         l10n_update_dir=`echo "$2" | sed 's/"//g'`
-        echo "Changing file permissions for $l10n_update_dir..."
-        chmod -Rf 775 $target_dir/$l10n_update_dir 
+	# this is not needed anymore - persmissions are set by cleanup script because it executes under sudo
+        #echo "Changing file permissions for $l10n_update_dir..."
+        #chmod -Rf 775 $target_dir/$l10n_update_dir 
     fi
     echo "Updating translations..."
     $DRUSH l10n-update --root="$target_dir"
