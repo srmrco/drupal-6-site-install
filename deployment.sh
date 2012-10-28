@@ -6,6 +6,7 @@
 source_dir=$1
 target_dir=$2
 config_file=$3
+variables_file=$4
 
 DRUSH=/usr/share/drush5/drush
 CLEANUP=/usr/local/share/deploy/cleanup.sh
@@ -103,6 +104,32 @@ echo "Changing file permissions..."
 chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
 chmod -Rf 777 $target_dir/sites/default
 echo "Permissions have been set."
+
+# set additional variables
+#
+#$DRUSH --root=$target_dir vset 
+
+# try parse variables file
+if [ -f $variables_file ]; then
+    echo "Using variables file $variables_file"
+
+    cat $variables_file |
+        while read line
+        do
+	    chr=${line:0:1}
+   	    case $chr in
+                "#") # Currently we ignore commented lines
+                     ;;
+                 * )
+	             $DRUSH --root=$target_dir vset $line
+                     ;;
+            esac
+        done
+
+else
+    echo "No variables file specified. But that's OK..."
+fi
+
 
 echo "Installation ends."
 
