@@ -20,8 +20,8 @@ cp -r $source_dir $target_dir
 
 # we may want to copy hidden stuff as well
 if [[ -n $COPY_HIDDEN_STUFF ]]; then
-    echo "Copying hidden stuff..."
-    cp -r $source_dir/.[a-zA-Z0-9]* $target_dir/
+    echo "Copying hidden stuff from `$source_dir/.git` to `$target_dir`"
+    cp -r $source_dir/.git $target_dir/
     echo "Hidden stuff copied."
 fi
 
