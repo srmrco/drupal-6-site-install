@@ -65,10 +65,13 @@ fi
 if [[ -z $FILE_OWNER_GROUP ]]; then
     FILE_OWNER_GROUP="www-data"
 fi
+if [[ -z $COPY_HIDDEN_STUFF ]]; then
+    COPY_HIDDEN_STUFF="0"
+fi
 
 
 # run cleanup script
-sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
+sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP $COPY_HIDDEN_STUFF
 
 # drop all tables in the database
 echo "Dropping tables from $DB_NAME..."

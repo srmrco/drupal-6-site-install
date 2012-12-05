@@ -11,8 +11,9 @@ branch_name=$3
 echo "Updating repository in $target_dir ..."
 cd $target_dir
 
-echo "About to do git pull $remote_name $branch_name..."
-git pull $remote_name $branch_name
+echo "Fetching from $remote_name/$branch_name..."
+git fetch
+git reset --hard $remote_name/$branch_name
 
 echo "Update complete"
 echo "Exit"
