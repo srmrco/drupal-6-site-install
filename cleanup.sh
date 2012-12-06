@@ -4,11 +4,6 @@ source_dir=$1
 target_dir=$2
 FILE_OWNER_USER=$3
 FILE_OWNER_GROUP=$4
-COPY_HIDDEN_STUFF=$5
-
-if [[ -z $COPY_HIDDEN_STUFF= ]]; then
-    COPY_HIDDEN_STUFF="0"
-fi
 
 # delete everything from target_dir
 echo "Deleting $target_dir..."
@@ -17,14 +12,6 @@ rm -rf $target_dir
 # copy new files
 echo "Copying new files from $source_dir to $target_dir..."
 cp -r $source_dir $target_dir
-
-# we may want to copy hidden stuff as well
-if [[ -n $COPY_HIDDEN_STUFF ]]; then
-    #disable this untill I fix it
-    #echo "Copying hidden stuff from $source_dir/.git to $target_dir"
-    #cp -r $source_dir/.git $target_dir/
-    #echo "Hidden stuff copied."
-fi
 
 echo "Copying complete."
 

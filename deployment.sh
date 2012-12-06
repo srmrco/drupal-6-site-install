@@ -65,13 +65,10 @@ fi
 if [[ -z $FILE_OWNER_GROUP ]]; then
     FILE_OWNER_GROUP="www-data"
 fi
-if [[ -z $COPY_HIDDEN_STUFF ]]; then
-    COPY_HIDDEN_STUFF="0"
-fi
 
 
 # run cleanup script
-sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP $COPY_HIDDEN_STUFF
+sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
 
 # drop all tables in the database
 echo "Dropping tables from $DB_NAME..."
@@ -88,7 +85,7 @@ if [[ -n $L10N_UPDATE ]]; then
     var="l10n_update_download_store"
     $DRUSH vget $var --root="$target_dir" &> /dev/null
     if [[ "$?" -eq 0 ]]; then
-        set `$DRUSH vget $var --root="$target_dir"`     
+        set `$DRUSH vget $var --root="$target_dir"`
         l10n_update_dir=`echo "$2" | sed 's/"//g'`
 	# this is not needed anymore - persmissions are set by cleanup script because it executes under sudo
         #echo "Changing file permissions for $l10n_update_dir..."
@@ -97,10 +94,6 @@ if [[ -n $L10N_UPDATE ]]; then
     echo "Updating translations..."
     $DRUSH l10n-update --root="$target_dir"
 fi
-
-# workaround http://drupal.org/node/1297438#comment-5374060
-# reinstalling with locale
-# $DRUSH site-install $PROFILE  --yes --locale=$LOCALE --site-name="$SITE_NAME" --site-mail=$SITE_MAIL --db-url=$DB_URL --account-mail=$ACCOUNT_MAIL --account-name=$ACCOUNT_NAME --account-pass=$ACCOUNT_PASS
 
 # fix file permissions
 echo "Changing file permissions..."
