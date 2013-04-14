@@ -20,7 +20,7 @@ echo "Changing file permissions..."
 chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
 chmod -Rf 777 $target_dir/sites/default
 chmod -Rf 775 $target_dir/sites/all/translations
+chmod -f 777 $target_dir/.htaccess
 echo "Permissions have been set."
-
 
 
