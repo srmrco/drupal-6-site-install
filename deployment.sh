@@ -101,10 +101,6 @@ chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
 chmod -Rf 777 $target_dir/sites/default
 echo "Permissions have been set."
 
-# set additional variables
-#
-#$DRUSH --root=$target_dir vset 
-
 # try parse variables file
 if [ -f $variables_file ]; then
     echo "Using variables file $variables_file"
@@ -124,6 +120,12 @@ if [ -f $variables_file ]; then
 
 else
     echo "No variables file specified. But that's OK..."
+fi
+
+# maybe we need to modify RewriteBase in .htaccess?
+if [ -n "${REWRITE_BASE}" ]; then
+    echo "Updating RewriteBase directive in .htaccess file..."
+    sed -i "s/# RewriteBase \/$/RewriteBase \/$REWRITE_BASE/" $target_dir/.htaccess
 fi
 
 
