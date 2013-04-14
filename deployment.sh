@@ -125,7 +125,9 @@ fi
 # maybe we need to modify RewriteBase in .htaccess?
 if [ -n "${REWRITE_BASE}" ]; then
     echo "Updating RewriteBase directive in .htaccess file..."
+    chmod g+w $target_dir
     sed -i "s/# RewriteBase \/$/RewriteBase \/$REWRITE_BASE/" $target_dir/.htaccess
+    chmod g-w $target_dir
 fi
 
 
