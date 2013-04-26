@@ -67,15 +67,14 @@ if [[ -z $FILE_OWNER_GROUP ]]; then
     FILE_OWNER_GROUP="www-data"
 fi
 
+# run cleanup script
+sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
+
 # append some additional content to settings.php file
 if [ -f $variables_overrides_in_settings ]; then
     echo "Append vaiables overrides to settings.php from $variables_overrides_in_settings"
     cat $variables_overrides_in_settings >> $target_dir/sites/default/settings.php
 fi
-
-
-# run cleanup script
-sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
 
 # drop all tables in the database
 echo "Dropping tables from $DB_NAME..."
