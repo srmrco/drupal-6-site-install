@@ -7,6 +7,7 @@ source_dir=$1
 target_dir=$2
 config_file=$3
 variables_file=$4
+variables_overrides_in_settings=$5
 
 DRUSH=/usr/share/drush5/drush
 CLEANUP=/usr/local/share/deploy/cleanup.sh
@@ -64,6 +65,12 @@ if [[ -z $FILE_OWNER_USER ]]; then
 fi
 if [[ -z $FILE_OWNER_GROUP ]]; then
     FILE_OWNER_GROUP="www-data"
+fi
+
+# append some additional content to settings.php file
+if [ -f $variables_overrides_in_settings ]; then
+    echo "Append vaiables overrides to settings.php from $variables_overrides_in_settings"
+    cat $variables_overrides_in_settings >> $target_dir/sites/default/settings.php
 fi
 
 
