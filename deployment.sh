@@ -73,7 +73,7 @@ sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
 # append some additional content to settings.php file
 if [ -f $variables_overrides_in_settings ]; then
     echo "Append vaiables overrides to settings.php from $variables_overrides_in_settings"
-    cat $target_dir/sites/default/settings.php $variables_overrides_in_settings > $target_dir/sites/default/settings.php
+    echo $variables_overrides_in_settings >> $target_dir/sites/default/settings.php
 fi
 
 # drop all tables in the database
