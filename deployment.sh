@@ -66,6 +66,81 @@ fi
 if [[ -z $FILE_OWNER_GROUP ]]; then
     FILE_OWNER_GROUP="www-data"
 fi
+if [[ -z $FULL_DEPLOY_TRIGGER_SUBSTRING ]]; then
+    FULL_DEPLOY_TRIGGER_SUBSTRING='#deploy'
+fi
+
+# find out if we need a full deploy or only file updates
+NEED_FULL_DEPLOY="1"
+if [ -n $FULL_DEPLOY_ONLY_ON_COMMIT_TOKEN ] && [ "$FULL_DEPLOY_ONLY_ON_COMMIT_TOKEN" = "1" ]; then
+    NEED_FULL_DEPLOY="0"
+fi
+
+if [ "$NEED_FULL_DEPLOY" = "1" ]; then
+    echo "Proceed with full deployment..."
+else
+    echo "Configuration params are set to check if we actually need a full deployment."
+    echo "We will look for a '#deploy' substring in a commit message..."
+    # get the commit message from git log
+    if [[ -z $GIT_COMMIT ]]; then
+        echo "Unable to deterine git commit sha"
+    else
+        echo "Trying to find out a commit message for commit $GIT_COMMIT"
+        message="$(git log --format=%B -n 1 $GIT_COMMIT)"
+        if [[ "$message" == *"$FULL_DEPLOY_TRIGGER_SUBSTRING"* ]]; then
+            echo "Commit message contains build trigger substring $FULL_DEPLOY_TRIGGER_SUBSTRING - need full deployment"
+            NEED_FULL_DEPLOY="1"
+        else
+            echo "Don't need full deployment right now because git commit message does not contain trigger substring $FULL_DEPLOY_TRIGGER_SUBSTRING."
+        fi
+    fi
+fi
+
+# it is possible that we just need to update files and exit
+if [ "$NEED_FULL_DEPLOY" = "0" ]; then
+    if [ -d "$target_dir" ]; then
+
+        # temp folder that will hold sites/default folder
+        timestamp=$(date +%F-%H-%M-%S)
+        temp_dir=/tmp/deploy/$timestamp
+
+        if [ -d $temp_dir ]; then
+            rm -rf $temp_dir
+        fi
+        mkdir -p $(dirname "$temp_dir/default")
+        echo "Created a temp dir: $temp_dir"
+
+        # copy sites/default folder to temp location
+        cp -Rf $target_dir/sites/default $temp_dir/default
+        echo "sites/default folder has been backed up. Ready to update files"
+
+        # run cleanup script
+        sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
+
+        echo "Restoring sites/default..."
+        # restore sites/default folder
+        cp -Rf $temp_dir/default $target_dir/sites/
+        echo "Restored."
+
+        # maybe we need to modify RewriteBase in .htaccess?
+        if [ -n "${REWRITE_BASE}" ]; then
+            echo "Updating RewriteBase directive in .htaccess file..."
+            sed "s/# RewriteBase \/$/RewriteBase \/$REWRITE_BASE/" $target_dir/.htaccess > ~/tmp.out
+            cp -f ~/tmp.out $target_dir/.htaccess
+            rm ~/tmp.out
+        fi
+
+        echo "Now run drush updates..."
+        cd $target_dir/sites/default
+        $DRUSH updb
+        echo "Ready."
+
+        exit 0
+    else
+        echo "Target directory does not exist - $target_dir, redeploy from scratch"
+        NEED_FULL_DEPLOY="1"
+    fi
+fi
 
 # run cleanup script
 sudo $CLEANUP $source_dir $target_dir $FILE_OWNER_USER $FILE_OWNER_GROUP
