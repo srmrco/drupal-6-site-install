@@ -133,6 +133,9 @@ if [ "$NEED_FULL_DEPLOY" = "0" ]; then
         echo "Now run drush updates..."
         cd $target_dir/sites/default
         $DRUSH updb
+
+        rm -rf $temp_dir
+        echo "Temp directory deleted."
         echo "Ready."
 
         exit 0
