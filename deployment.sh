@@ -122,6 +122,12 @@ if [ "$NEED_FULL_DEPLOY" = "0" ]; then
         cp -Rf $temp_dir/default $target_dir/sites/
         echo "Restored."
 
+        # fix file permissions
+        echo "Changing file permissions..."
+        chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
+        chmod -Rf 777 $target_dir/sites/default/files
+        echo "Permissions have been set."
+
         # maybe we need to modify RewriteBase in .htaccess?
         if [ -n "${REWRITE_BASE}" ]; then
             echo "Updating RewriteBase directive in .htaccess file..."
@@ -184,7 +190,7 @@ fi
 # fix file permissions
 echo "Changing file permissions..."
 chown -Rf $FILE_OWNER_USER:$FILE_OWNER_GROUP $target_dir
-chmod -Rf 777 $target_dir/sites/default
+chmod -Rf 777 $target_dir/sites/default/files
 echo "Permissions have been set."
 
 # try parse variables file
