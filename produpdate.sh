@@ -69,6 +69,9 @@ if [ -d "$target_dir" ]; then
     cd $target_dir/sites/default
     $DRUSH updb
 
+    echo "Clean caches..."
+    $DRUSH cc all
+
     rm -rf $temp_dir
     echo "Temp directory deleted."
     echo "Ready."
