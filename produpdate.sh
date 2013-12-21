@@ -67,7 +67,7 @@ if [ -d "$target_dir" ]; then
 
     echo "Now run drush updates..."
     cd $target_dir/sites/default
-    $DRUSH updb
+    $DRUSH -y updb
 
     echo "Clean caches..."
     $DRUSH cc all
