@@ -65,8 +65,10 @@ if [ -d "$target_dir" ]; then
     chmod -Rf 777 $target_dir/sites/default/files
     echo "Permissions have been set."
 
-    echo "Now run drush updates..."
+    echo "Going to $target_dir/sites/default..."
     cd $target_dir/sites/default
+
+    echo "Now run drush updates..."
     $DRUSH -y updb
 
     echo "Clean caches..."

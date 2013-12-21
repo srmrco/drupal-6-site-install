@@ -136,9 +136,11 @@ if [ "$NEED_FULL_DEPLOY" = "0" ]; then
             rm ~/tmp.out
         fi
 
-        echo "Now run drush updates..."
+        echo "Going to $target_dir/sites/default..."
         cd $target_dir/sites/default
-        $DRUSH updb
+
+        echo "Now run drush updates..."
+        $DRUSH -y updb
 
         rm -rf $temp_dir
         echo "Temp directory deleted."
