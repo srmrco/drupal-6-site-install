@@ -6,7 +6,7 @@
 source_dir=$1
 target_dir=$2
 
-DRUSH=/usr/share/drush5/drush
+DRUSH=/usr/share/drush/drush
 PLATFORM_DEPLOY_TRIGGER='#platform'
 
 # check our input arguments
