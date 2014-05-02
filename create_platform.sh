@@ -7,7 +7,6 @@ source_dir=$1
 target_dir=$2
 
 DRUSH=/usr/share/drush5/drush
-AEGIR_PLATFORMS_PATH=/var/aegir/platforms
 PLATFORM_DEPLOY_TRIGGER='#platform'
 
 # check our input arguments
@@ -44,7 +43,7 @@ fi
 
 timestamp=$(date +%F_%H_%M_%S)
 platform_alias=platform_$timestamp
-new_platform_path=$AEGIR_PLATFORMS_PATH/$platform_alias
+new_platform_path=$target_dir/$platform_alias
 
 echo "Copying new platform to $new_platform_path..."
 sudo cp -r $source_dir $new_platform_path
