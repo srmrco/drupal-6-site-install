@@ -7,27 +7,11 @@ source_dir=$1
 target_dir=$2
 
 DRUSH=/usr/share/drush/drush.php
-PLATFORM_DEPLOY_TRIGGER='#platform'
 
 # check our input arguments
 if [[ -z $source_dir ]] || [[ -z $target_dir ]]; then
     echo "Error: missing source or target dir arguments. Exit."
     exit 1
-fi
-
-echo "Looking for a '$PLATFORM_DEPLOY_TRIGGER' substring in a commit message..."
-# get the commit message from git log
-if [[ -z $GIT_COMMIT ]]; then
-    echo "Unable to deterine git commit sha"
-else
-    echo "Trying to find out a commit message for commit $GIT_COMMIT"
-    message="$(git log --format=%B -n 1 $GIT_COMMIT)"
-    if [[ "$message" == *"$PLATFORM_DEPLOY_TRIGGER"* ]]; then
-        echo "Commit message contains platform creation trigger substring $PLATFORM_DEPLOY_TRIGGER - need platform creation"
-    else
-        echo "No need to create a new platform because git commit message does not contain trigger substring $PLATFORM_DEPLOY_TRIGGER."
-        exit 0
-    fi
 fi
 
 timestamp=$(date +%F_%H_%M_%S)
@@ -42,7 +26,15 @@ sudo chown -R aegir:aegir $new_platform_path
 
 echo "Setting up a new platform in Aegir..."
 $DRUSH --root="$new_platform_path" provision-save "@$platform_alias" --context_type='platform'
+
+echo 'Sleeping for 5 seconds...'
+sleep 10s
+
 $DRUSH @hostmaster hosting-import "@$platform_alias"
+echo 'Sleeping for 5 more seconds...'
+sleep 10s
+
+echo 'Dispatching frontend update so that platform will become visible in Aegir...'
 $DRUSH @hostmaster hosting-dispatch
 
 echo "Complete."
