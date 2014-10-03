@@ -74,6 +74,9 @@ if [ -d "$target_dir" ]; then
     echo "Clean caches..."
     $DRUSH cc all
 
+    # to invalidate APC caches
+    sudo /etc/init.d/apache2 graceful
+
     rm -rf $temp_dir
     echo "Temp directory deleted."
     echo "Ready."
